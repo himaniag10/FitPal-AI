@@ -4,16 +4,14 @@ const { getPlans } = require('../services/aiInsights');  // Import the logic to 
 
 // Route to get workout and nutrition plans
 router.post('/plans', async (req, res) => {
-  console.log("Received userPreferences:", req.body.userPreferences); // Add this log
-  const { userPreferences } = req.body;  // Example data from the request body
- // Example data from the request body
+  console.log("Received userPreferences:", req.body.userPreferences); 
+  const { userPreferences } = req.body;  
 
   if (!userPreferences) {
     return res.status(400).json({ message: 'User preferences are required' });
   }
 
   try {
-    // Call the getPlans function to fetch both workout and nutrition plans
     const { success, workoutPlan, fullDayNutritionPlan } = await getPlans(userPreferences);
 
     if (success) {

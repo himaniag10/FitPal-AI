@@ -8,11 +8,10 @@ const connectDB = async () => {
     console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error.message);
-    process.exit(1); // Exit process if the connection fails
+    process.exit(1); 
   }
 };
 
-// Connection events to log the status
 mongoose.connection.on('connected', () => {
   console.log('Mongoose connected to MongoDB');
 });

@@ -1,11 +1,9 @@
 const axios = require('axios');
 require('dotenv').config();
 
-// Hugging Face API details
 const HUGGING_FACE_API_KEY = process.env.HF_API_TOKEN;
 const HUGGING_FACE_MODEL_URL = 'https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Coder-32B-Instruct';
 
-// Function to interact with Hugging Face model
 async function fetchHuggingFaceResponse(prompt) {
   try {
     const response = await axios.post(HUGGING_FACE_MODEL_URL, {
@@ -27,17 +25,14 @@ async function fetchHuggingFaceResponse(prompt) {
   }
 }
 
-// Function to clean up the generated text
 function cleanResponse(responseText) {
   return responseText
-    .replace(/\n+/g, ' ')   // Replace multiple newlines with a single space
-    .replace(/\s{2,}/g, ' ') // Replace multiple spaces with a single space
-    .trim();                // Trim leading/trailing spaces
+    .replace(/\n+/g, ' ')   
+    .replace(/\s{2,}/g, ' ')  
+    .trim();                
 }
 
-// Function to generate a meal plan for a specific meal (breakfast, snack, lunch, dinner)
 async function getMealPlan(mealType, userDetails, calorieGoal) {
-  // Adjust calorie ranges for each meal based on the total daily goal
   const mealCalorieRanges = {
     breakfast: { min: 0.25 * calorieGoal, max: 0.3 * calorieGoal },
     snack1: { min: 0.08 * calorieGoal, max: 0.12 * calorieGoal },
@@ -72,10 +67,8 @@ async function getMealPlan(mealType, userDetails, calorieGoal) {
   }
 }
 
-// Function to generate the full-day nutrition plan (breakfast, snack, lunch, dinner)
 async function getFullNutritionPlan(userDetails) {
-  const calorieGoal = userDetails.calorieGoal || 2500;  // User-defined calorie goal
-
+  const calorieGoal = userDetails.calorieGoal || 2500;  
   try {
     const breakfast = await getMealPlan('breakfast', userDetails, calorieGoal);
     const snack1 = await getMealPlan('snack1', userDetails, calorieGoal);
@@ -102,7 +95,6 @@ async function getFullNutritionPlan(userDetails) {
   }
 }
 
-// Function to generate workout plan
 async function getWorkoutPlan(userDetails) {
   const prompt = `
     You are a professional fitness trainer. Create a personalized workout plan for the following details:
@@ -124,7 +116,6 @@ async function getWorkoutPlan(userDetails) {
   }
 }
 
-// Function to generate both workout and nutrition plan
 async function getPlans(userDetails) {
   try {
     const workoutPlan = await getWorkoutPlan(userDetails);

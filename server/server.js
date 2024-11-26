@@ -1,31 +1,31 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db'); // Connect to MongoDB if necessary
-const authRoutes = require('./routes/auth'); // Authentication routes
-const insightsRoutes = require('./routes/insights'); // Insights routes
+const connectDB = require('./config/db'); 
+const authRoutes = require('./routes/auth'); 
+const insightsRoutes = require('./routes/insights'); 
 
 dotenv.config();
 
 const app = express();
-connectDB(); // Connect to the database if necessary
+connectDB(); 
 
-// Middleware
-app.use(express.json()); // Parse JSON bodies
-app.use(cors()); // Enable CORS for all requests
 
-// Routes
-app.use('/api/auth', authRoutes); // Authentication routes
-app.use('/api/insights', insightsRoutes); // Insights (workout & nutrition advice)
+app.use(express.json()); 
+app.use(cors()); 
 
-// Root endpoint
+
+app.use('/api/auth', authRoutes); 
+app.use('/api/insights', insightsRoutes);
+
+
 app.get('/', (req, res) => {
     res.send('FitPal Backend API is Running');
 });
 
 
 
-// Start the server
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

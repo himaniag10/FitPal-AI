@@ -1,20 +1,18 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-// User Schema Definition
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
         unique: true,
-        trim: true, // Remove unnecessary spaces
+        trim: true, 
     },
     password: {
         type: String,
         required: true,
         validate: {
             validator: function (v) {
-                // Password must be at least 8 characters long and include a letter and a number
                 return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(v);
             },
             message: 'Password must be at least 8 characters long and include a letter and a number.',
@@ -26,7 +24,6 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: function (v) {
-                // Simple email regex
                 return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
             },
             message: props => `${props.value} is not a valid email!`,
@@ -34,7 +31,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        default: 'https://example.com/default-profile-picture.png', // URL for the user's default profile picture
+        default: 'https://example.com/default-profile-picture.png', 
     },
     age: {
         type: Number,
@@ -47,7 +44,6 @@ const userSchema = new mongoose.Schema({
         default: '',
         validate: {
             validator: function (v) {
-                // Simple regex for height format like "5'4"
                 return /^(\d+)'(\d+)"?$/.test(v);
             },
             message: props => `${props.value} is not a valid height format!`,
@@ -56,21 +52,21 @@ const userSchema = new mongoose.Schema({
     weight: {
         type: Number,
         min: [0, 'Weight must be a positive number.'],
-        default: null, // Optional field
+        default: null, 
     },
     goals: {
         type: [String],
-        default: [], // Array of goals
+        default: [],
     },
     fitnessLevel: {
         type: String,
         enum: ['Beginner', 'Intermediate', 'Advanced'],
-        default: 'Beginner', // Set a default level
+        default: 'Beginner',
     },
     dietaryPreferences: {
         type: String,
         enum: ['Vegetarian', 'Non-Vegetarian', 'Vegan', 'Pescatarian'],
-        default: 'Non-Vegetarian', // Default dietary preference
+        default: 'Non-Vegetarian',
     },
     activityLog: {
         type: [
@@ -97,31 +93,26 @@ const userSchema = new mongoose.Schema({
         ],
         default: [],
     },
-}, { timestamps: true }); // Automatically add createdAt and updatedAt fields
+}, { timestamps: true });
 
-// Hash password before saving the user
 userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
-        const salt = await bcrypt.genSalt(12); // Increased salt rounds for better security
+        const salt = await bcrypt.genSalt(12);
         this.password = await bcrypt.hash(this.password, salt);
     }
     next();
 });
 
-// Instance method to get the user's activity logs
 userSchema.methods.getActivityLogs = function () {
     return this.activityLog;
 };
 
-// Static method to find user by email
 userSchema.statics.findByEmail = function (email) {
     return this.findOne({ email });
 };
 
-// Add indexes for performance (frequent query fields)
 userSchema.index({ email: 1 });
 userSchema.index({ username: 1 });
 
-// Create and export the User model
 const User = mongoose.model('User', userSchema);
 module.exports = User;
